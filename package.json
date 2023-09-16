@@ -11,7 +11,8 @@
     "start": "nodemon index.js"
   },
   "dependencies": {
-    "koa": "^2.14.2"
+    "koa": "^2.14.2",
+    "winston": "^3.10.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
