@@ -8,9 +8,12 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "dependencies": {
     "koa": "^2.14.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }
