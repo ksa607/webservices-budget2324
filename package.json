@@ -8,13 +8,31 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "env-cmd nodemon"
   },
   "dependencies": {
+    "@koa/router": "^12.0.0",
+    "config": "^3.3.9",
     "koa": "^2.14.2",
     "winston": "^3.10.0"
   },
   "devDependencies": {
+    "env-cmd": "^10.1.0",
     "nodemon": "^3.0.1"
+  },
+  "nodemonConfig": {
+    "signal": "SIGTERM",
+    "ignore": [
+      "node_modules/*",
+      ".vscode/*"
+    ],
+    "delay": "80",
+    "watch": [
+      "config",
+      "src"
+    ],
+    "ext": "js,json",
+    "legacyWatch": true,
+    "exec": "node --inspect=0.0.0.0:9001 --trace-warnings index.js"
   }
 }
