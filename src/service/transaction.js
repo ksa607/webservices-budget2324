@@ -5,7 +5,7 @@ const getAll = () => {
 };
 
 const getById = (id) => {
-  throw new Error('Not implemented yet!');
+  return TRANSACTIONS.find((t) => t.id === id);
 };
 
 const create = ({ amount, date, placeId, user }) => {
