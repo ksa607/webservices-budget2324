@@ -2,6 +2,7 @@ const Koa = require('koa');
 const winston = require('winston');
 const bodyParser = require('koa-bodyparser');
 const Router = require('@koa/router');
+const transactionService = require('./service/transaction');
 
 const app = new Koa();
 
@@ -18,8 +19,7 @@ app.use(bodyParser());
 const router = new Router();
 
 router.get('/api/transactions', async (ctx) => {
-  logger.info(JSON.stringify(ctx.request));
-  ctx.body = '[{"user": "Benjamin", "amount": 100, "place": "Irish Pub", "date": "2021-08-15" }]';
+  ctx.body = transactionService.getAll();
 });
 
 app.use(router.routes())
