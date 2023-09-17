@@ -1,22 +1,27 @@
+const config = require('config');
 const Koa = require('koa');
-const winston = require('winston');
 const bodyParser = require('koa-bodyparser');
+const { initializeLogger, getLogger } = require('./core/logging');
 const installRest = require('./rest');
 
-const app = new Koa();
+const NODE_ENV = config.get('env');
+const LOG_LEVEL = config.get('log.level');
+const LOG_DISABLED = config.get('log.disabled');
 
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.simple(),
-  transports: [
-    new winston.transports.Console()
-  ]
+initializeLogger({
+  level: LOG_LEVEL,
+  disabled: LOG_DISABLED,
+  defaultMeta: {
+    NODE_ENV,
+  },
 });
+
+const app = new Koa();
 
 app.use(bodyParser());
 
 installRest(app);
 
 app.listen(9000, () => {
-  logger.info('🚀 Server listening on http://localhost:9000');
+  getLogger().info('🚀 Server listening on http://localhost:9000');
 });

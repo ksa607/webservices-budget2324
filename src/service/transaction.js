@@ -1,3 +1,4 @@
+const { getLogger } = require('../core/logging');
 const { TRANSACTIONS, PLACES } = require('../data/mock_data');
 
 const getAll = () => {
@@ -14,7 +15,7 @@ const create = ({ amount, date, placeId, user }) => {
     existingPlace = PLACES.find((place) => place.id === placeId);
 
     if (!existingPlace) {
-      throw new Error(`There is no place with id ${placeId}.`);
+      getLogger().error(`There is no place with id ${placeId}.`);
     }
   }
 
@@ -41,7 +42,7 @@ const updateById = (id, { amount, date, placeId, user }) => {
     existingPlace = PLACES.find((place) => place.id === placeId);
 
     if (!existingPlace) {
-      throw new Error(`There is no place with id ${placeId}.`);
+      getLogger().error(`There is no place with id ${placeId}.`);
     }
   }
   if (typeof user === 'string') {
