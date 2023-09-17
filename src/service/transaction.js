@@ -9,8 +9,31 @@ const getById = (id) => {
 };
 
 const create = ({ amount, date, placeId, user }) => {
-  throw new Error('Not implemented yet!');
+  let existingPlace;
+  if (placeId) {
+    existingPlace = PLACES.find((place) => place.id === placeId);
+
+    if (!existingPlace) {
+      throw new Error(`There is no place with id ${placeId}.`);
+    }
+  }
+
+  if (typeof user === 'string') {
+    user = { id: Math.floor(Math.random() * 100000), name: user };
+  }
+  const maxId = Math.max(...TRANSACTIONS.map((i) => i.id));
+
+  const newTransaction = {
+    id: maxId + 1,
+    amount,
+    date: date.toISOString(),
+    place: existingPlace,
+    user,
+  };
+  TRANSACTIONS.push(newTransaction);
+  return newTransaction;
 };
+
 const updateById = (id, { amount, date, placeId, user }) => {
   throw new Error('Not implemented yet!');
 };
