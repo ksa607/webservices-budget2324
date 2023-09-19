@@ -1,3 +1,4 @@
+const { getLogger } = require('../core/logging');
 const { tables, getKnex } = require('../data/index');
 
 const formatTransaction = ({
@@ -53,6 +54,34 @@ const findById = async (id) => {
     .first(SELECT_COLUMNS);
 
   return transaction && formatTransaction(transaction);
+};
+
+/**
+ * Create a new transaction.
+ *
+ * @param {object} transaction - The transaction to create.
+ * @param {number} transaction.amount - Amount deposited/withdrawn.
+ * @param {Date} transaction.date - Date of the transaction.
+ * @param {number} transaction.placeId - Id of the place the transaction happened.
+ * @param {number} transaction.userId - Id of the user who did the transaction.
+ *
+ * @returns {Promise<number>} Created transaction's id
+ */
+const create = async ({ amount, date, placeId, userId }) => {
+  try {
+    const [id] = await getKnex()(tables.transaction).insert({
+      amount,
+      date,
+      place_id: placeId,
+      user_id: userId,
+    });
+    return id;
+  } catch (error) {
+    getLogger().error('Error in create', {
+      error,
+    });
+    throw error;
+  }
 };
 
 module.exports = {
