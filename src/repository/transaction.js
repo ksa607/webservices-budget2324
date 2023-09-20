@@ -32,6 +32,40 @@ const SELECT_COLUMNS = [
 ];
 
 /**
+ * Get all transactions
+ *
+ */
+const findAll = async () => {
+  const transactions = await getKnex()(tables.transaction)
+    .join(
+      tables.place,
+      `${tables.transaction}.place_id`,
+      '=',
+      `${tables.place}.id`
+    )
+    .join(
+      tables.user,
+      `${tables.transaction}.user_id`,
+      '=',
+      `${tables.user}.id`
+    )
+    .select(SELECT_COLUMNS)
+    .orderBy('date', 'ASC');
+
+  return transactions.map(formatTransaction);
+};
+
+/**
+ * Calculate the total number of transactions.
+ *
+ */
+const findCount = async () => {
+  const [count] = await getKnex()(tables.transaction).count();
+
+  return count['count(*)'];
+};
+
+/**
  * Find a transaction with the given `id`.
  *
  * @param {number} id - Id of the transaction to find.
@@ -83,7 +117,65 @@ const create = async ({ amount, date, placeId, userId }) => {
     throw error;
   }
 };
+/**
+ * Update an existing transaction.
+ *
+ * @param {number} id - Id of the transaction to update.
+ * @param {object} transaction - The transaction data to save.
+ * @param {number} [transaction.amount] - Amount deposited/withdrawn.
+ * @param {Date} [transaction.date] - Date of the transaction.
+ * @param {number} [transaction.placeId] - Id of the place the transaction happened.
+ * @param {number} [transaction.userId] - Id of the user who did the transaction.
+ *
+ * @returns {Promise<number>} Transaction's id
+ */
+const updateById = async (id, { amount, date, placeId, userId }) => {
+  try {
+    await getKnex()(tables.transaction)
+      .update({
+        amount,
+        date,
+        place_id: placeId,
+        user_id: userId,
+      })
+      .where(`${tables.transaction}.id`, id);
+    return id;
+  } catch (error) {
+    getLogger().error('Error in updateById', {
+      error,
+    });
+    throw error;
+  }
+};
+
+/**
+ * Delete a transaction with the given `id`.
+ *
+ * @param {number} id - Id of the transaction to delete.
+ * @param {number} userId - Id of the user deleting the transaction.
+ *
+ * @returns {Promise<boolean>} Whether the transaction was deleted.
+ */
+const deleteById = async (id, userId) => {
+  try {
+    const rowsAffected = await getKnex()(tables.transaction)
+      .where(`${tables.transaction}.id`, id)
+      .delete();
+
+    return rowsAffected > 0;
+  } catch (error) {
+    getLogger().error('Error in deleteById', {
+      error,
+    });
+    throw error;
+  }
+};
 
 module.exports = {
+  findAll,
+  findCount,
   findById,
+  create,
+  updateById,
+  deleteById,
 };
