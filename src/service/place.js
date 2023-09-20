@@ -1,39 +1,39 @@
-const { PLACES } = require('../data/mock_data');
+const placeRepository = require('../repository/place');
 
-const getAll = () => {
-  return { items: PLACES, count: PLACES.length };
-};
-
-const getById = (id) => {
-  return PLACES.find((t) => t.id === id);
-};
-
-const create = ({ name, rating }) => {
-  const maxId = Math.max(...PLACES.map((i) => i.id));
-
-  const newPlace = {
-    id: maxId + 1,
-    name,
-    rating
+const getAll = async () => {
+  const items = await placeRepository.findAll();
+  return {
+    items,
+    count: items.length,
   };
-  PLACES.push(newPlace);
-  return newPlace;
 };
 
-const updateById = (id, { name, rating }) => {
-  const index = PLACES.findIndex((t) => t.id === id);
-  const updatedPlace = {
-    ...PLACES[index],
-    name,
-    rating
-  };
-  PLACES[index] = updatedPlace;
-  return updatedPlace;
+const getById = async (id) => {
+  const place = await placeRepository.findById(id);
+
+  if (!place) {
+    throw Error(`No place with id ${id} exists`, { id });
+  }
+
+  return place;
 };
 
-const deleteById = (id) => {
-  const index = PLACES.findIndex((t) => t.id === id);
-  PLACES.splice(index, 1);
+const create = async ({ name, rating }) => {
+  const id = await placeRepository.create({ name, rating });
+  return getById(id);
+};
+
+const updateById = async (id, { name, rating }) => {
+  await placeRepository.updateById(id, { name, rating });
+  return getById(id);
+};
+
+const deleteById = async (id) => {
+  const deleted = await placeRepository.deleteById(id);
+
+  if (!deleted) {
+    throw Error(`No place with id ${id} exists`, { id });
+  }
 };
 
 module.exports = {

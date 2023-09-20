@@ -1,67 +1,64 @@
-const { getLogger } = require('../core/logging');
-const { TRANSACTIONS, PLACES } = require('../data/mock_data');
+const transactionRepository = require('../repository/transaction');
+const placeService = require('./place');
 
-const getAll = () => {
-  return { items: TRANSACTIONS, count: TRANSACTIONS.length };
+const getAll = async () => {
+  const items = await transactionRepository.findAll();
+  return {
+    items,
+    count: items.length,
+  };
 };
 
-const getById = (id) => {
-  return TRANSACTIONS.find((t) => t.id === id);
+const getById = async (id) => {
+  const transaction = await transactionRepository.findById(id);
+
+  if (!transaction) {
+    throw Error(`No transaction with id ${id} exists`, { id });
+  }
+
+  return transaction;
 };
 
-const create = ({ amount, date, placeId, user }) => {
-  let existingPlace;
+const create = async ({ amount, date, placeId, userId }) => {
+  const existingPlace = await placeService.getById(placeId);
+
+  if (!existingPlace) {
+    throw Error(`There is no place with id ${id}.`, { id });
+  }
+
+  const id = await transactionRepository.create({
+    amount,
+    date,
+    userId,
+    placeId,
+  });
+  return getById(id);
+};
+
+const updateById = async (id, { amount, date, placeId, userId }) => {
   if (placeId) {
-    existingPlace = PLACES.find((place) => place.id === placeId);
+    const existingPlace = await placeService.getById(placeId);
 
     if (!existingPlace) {
-      getLogger().error(`There is no place with id ${placeId}.`);
+      throw Error(`There is no place with id ${id}.`, { id });
     }
   }
 
-  if (typeof user === 'string') {
-    user = { id: Math.floor(Math.random() * 100000), name: user };
-  }
-  const maxId = Math.max(...TRANSACTIONS.map((i) => i.id));
-
-  const newTransaction = {
-    id: maxId + 1,
+  await transactionRepository.updateById(id, {
     amount,
-    date: date.toISOString(),
-    place: existingPlace,
-    user,
-  };
-  TRANSACTIONS.push(newTransaction);
-  return newTransaction;
+    date,
+    userId,
+    placeId,
+  });
+  return getById(id);
 };
 
-const updateById = (id, { amount, date, placeId, user }) => {
-  const index = TRANSACTIONS.findIndex((t) => t.id === id);
-  let existingPlace;
-  if (placeId) {
-    existingPlace = PLACES.find((place) => place.id === placeId);
+const deleteById = async (id) => {
+  const deleted = await transactionRepository.deleteById(id);
 
-    if (!existingPlace) {
-      getLogger().error(`There is no place with id ${placeId}.`);
-    }
+  if (!deleted) {
+    throw Error(`No transaction with id ${id} exists`, { id });
   }
-  if (typeof user === 'string') {
-    user = { id: Math.floor(Math.random() * 100000), name: user };
-  }
-  const updatedTransaction = {
-    ...TRANSACTIONS[index],
-    amount,
-    date: date.toISOString(),
-    place: existingPlace,
-    user,
-  };
-  TRANSACTIONS[index] = updatedTransaction;
-  return updatedTransaction;
-};
-
-const deleteById = (id) => {
-  const index = TRANSACTIONS.findIndex((t) => t.id === id);
-  TRANSACTIONS.splice(index, 1);
 };
 
 module.exports = {
