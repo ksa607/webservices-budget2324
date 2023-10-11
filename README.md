@@ -24,6 +24,8 @@ Create a `.env` (development) file with the following template.
 
 ```ini
 NODE_ENV=development
+DATABASE_USERNAME=root
+DATABASE_PASSWORD=root
 ```
 
 ## Start this project
@@ -31,3 +33,9 @@ NODE_ENV=development
 - Install all dependencies: `yarn`
 - Make sure a `.env` exists (see above)
 - Start the development server: `yarn start`
+
+## Test this project
+
+- Install all dependencies: `yarn`
+- Make sure a `.env.test` exists with `NODE_ENV=test` (see above)
+- Start the development server: `yarn test`
