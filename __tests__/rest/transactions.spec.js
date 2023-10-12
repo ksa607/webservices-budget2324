@@ -202,6 +202,51 @@ describe('Transactions', () => {
 
       transactionsToDelete.push(response.body.id);
     });
+  });
 
+  describe('PUT /api/transactions/:id', () => {
+
+    beforeAll(async () => {
+      await knex(tables.place).insert(data.places);
+      await knex(tables.user).insert(data.users);
+      await knex(tables.transaction).insert(data.transactions[0]);
+    });
+
+    afterAll(async () => {
+      await knex(tables.transaction)
+        .whereIn('id', dataToDelete.transactions)
+        .delete();
+
+      await knex(tables.place)
+        .whereIn('id', dataToDelete.places)
+        .delete();
+
+      await knex(tables.user)
+        .whereIn('id', dataToDelete.users)
+        .delete();
+    });
+
+    it('should 200 and return the updated transaction', async () => {
+      const response = await request.put(`${url}/1`)
+        .send({
+          amount: -125,
+          date: '2021-05-27T13:00:00.000Z',
+          placeId: 1,
+          userId: 1,
+        });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body.id).toBeTruthy();
+      expect(response.body.amount).toBe(-125);
+      expect(response.body.date).toBe('2021-05-27T13:00:00.000Z');
+      expect(response.body.place).toEqual({
+        id: 1,
+        name: 'Test place',
+      });
+      expect(response.body.user).toEqual({
+        id: 1,
+        name: 'Test User',
+      });
+    });
   });
 });
