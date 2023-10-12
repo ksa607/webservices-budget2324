@@ -1,4 +1,6 @@
 const Router = require('@koa/router');
+const Joi = require('joi');
+const validate = require('../core/validation');
 const transactionService = require('../service/transaction');
 
 const getAllTransactions = async (ctx) => {
@@ -18,6 +20,11 @@ const createTransaction = async (ctx) => {
 
 const getTransactionById = async (ctx) => {
   ctx.body = await transactionService.getById(Number(ctx.params.id));
+};
+getTransactionById.validationScheme = {
+  params: Joi.object({
+    id: Joi.number().integer().positive(),
+  }),
 };
 
 const updateTransaction = async (ctx) => {
@@ -46,7 +53,11 @@ module.exports = (app) => {
 
   router.get('/', getAllTransactions);
   router.post('/', createTransaction);
-  router.get('/:id', getTransactionById);
+  router.get(
+    '/:id',
+    validate(getTransactionById.validationScheme),
+    getTransactionById
+  );
   router.put('/:id', updateTransaction);
   router.delete('/:id', deleteTransaction);
 
