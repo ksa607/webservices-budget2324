@@ -21,6 +21,7 @@
     "koa": "^2.14.2",
     "koa-bodyparser": "^4.4.1",
     "mysql2": "^3.6.1",
+    "node-emoji": "^2.1.0",
     "winston": "^3.10.0"
   },
   "devDependencies": {
