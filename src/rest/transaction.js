@@ -6,6 +6,7 @@ const transactionService = require('../service/transaction');
 const getAllTransactions = async (ctx) => {
   ctx.body = await transactionService.getAll();
 };
+getAllTransactions.validationScheme = null;
 
 const createTransaction = async (ctx) => {
   const newTransaction = await transactionService.create({
@@ -59,7 +60,11 @@ module.exports = (app) => {
     prefix: '/transactions',
   });
 
-  router.get('/', getAllTransactions);
+  router.get(
+    '/',
+    validate(getAllTransactions.validationScheme),
+    getAllTransactions
+  );
   router.post(
     '/',
     validate(createTransaction.validationScheme),
