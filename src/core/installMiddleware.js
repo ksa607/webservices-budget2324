@@ -3,7 +3,9 @@ const bodyParser = require('koa-bodyparser');
 const koaCors = require('@koa/cors');
 const emoji = require('node-emoji');
 const { getLogger } = require('./logging');
+const ServiceError = require('./serviceError');
 
+const NODE_ENV = config.get('env');
 const CORS_ORIGINS = config.get('cors.origins');
 const CORS_MAX_AGE = config.get('cors.maxAge');
 
@@ -57,4 +59,46 @@ module.exports = function installMiddleware(app) {
   });
 
   app.use(bodyParser());
+
+  app.use(async (ctx, next) => {
+    try {
+      await next();
+    } catch (error) {
+      getLogger().error('Error occured while handling a request', { error });
+      let statusCode = error.status || 500;
+      let errorBody = {
+        code: error.code || 'INTERNAL_SERVER_ERROR',
+        message: error.message,
+        details: error.details || {},
+        stack: NODE_ENV !== 'production' ? error.stack : undefined,
+      };
+
+      if (error instanceof ServiceError) {
+        if (error.isNotFound) {
+          statusCode = 404;
+        }
+
+        if (error.isValidationFailed) {
+          statusCode = 400;
+        }
+      }
+
+      ctx.status = statusCode;
+      ctx.body = errorBody;
+    }
+  });
+
+  // Handle 404 not found with uniform response
+  app.use(async (ctx, next) => {
+    await next();
+
+    if (ctx.status === 404) {
+      ctx.status = 404;
+      ctx.body = {
+        code: 'NOT_FOUND',
+        message: `Unknown resource: ${ctx.url}`,
+      };
+    }
+  });
+
 };
