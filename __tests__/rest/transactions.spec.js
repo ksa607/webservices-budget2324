@@ -155,4 +155,53 @@ describe('Transactions', () => {
       });
     });
   });
+
+  describe('POST /api/transactions', () => {
+    const transactionsToDelete = [];
+
+    beforeAll(async () => {
+      await knex(tables.place).insert(data.places);
+      await knex(tables.user).insert(data.users);
+    });
+
+    afterAll(async () => {
+      await knex(tables.transaction)
+        .whereIn('id', transactionsToDelete)
+        .delete();
+
+      await knex(tables.place)
+        .whereIn('id', dataToDelete.places)
+        .delete();
+
+      await knex(tables.user)
+        .whereIn('id', dataToDelete.users)
+        .delete();
+    });
+
+    it('should 201 and return the created transaction', async () => {
+      const response = await request.post(url)
+        .send({
+          amount: 102,
+          date: '2021-05-27T13:00:00.000Z',
+          placeId: 1,
+          userId: 1,
+        });
+
+      expect(response.status).toBe(201);
+      expect(response.body.id).toBeTruthy();
+      expect(response.body.amount).toBe(102);
+      expect(response.body.date).toBe('2021-05-27T13:00:00.000Z');
+      expect(response.body.place).toEqual({
+        id: 1,
+        name: 'Test place',
+      });
+      expect(response.body.user).toEqual({
+        id: 1,
+        name: 'Test User'
+      });
+
+      transactionsToDelete.push(response.body.id);
+    });
+
+  });
 });
