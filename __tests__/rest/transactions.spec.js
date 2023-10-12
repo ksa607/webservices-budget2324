@@ -249,4 +249,30 @@ describe('Transactions', () => {
       });
     });
   });
+
+  describe('DELETE /api/transactions/:id', () => {
+
+    beforeAll(async () => {
+      await knex(tables.place).insert(data.places);
+      await knex(tables.user).insert(data.users);
+      await knex(tables.transaction).insert(data.transactions[0]);
+    });
+
+    afterAll(async () => {
+      await knex(tables.place)
+        .whereIn('id', dataToDelete.places)
+        .delete();
+
+      await knex(tables.user)
+        .whereIn('id', dataToDelete.users)
+        .delete();
+    });
+
+    it('should 204 and return nothing', async () => {
+      const response = await request.delete(`${url}/1`);
+
+      expect(response.statusCode).toBe(204);
+      expect(response.body).toEqual({});
+    });
+  });
 });
