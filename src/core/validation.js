@@ -53,6 +53,21 @@ const validate = (schema) => {
       ctx.params = paramsValue;
     }
 
+    if (!Joi.isSchema(schema.body)) {
+      schema.body = Joi.object(schema.body || {});
+    }
+
+    const { error: bodyError, value: bodyValue } = schema.body.validate(
+      ctx.request.body,
+      JOI_OPTIONS
+    );
+
+    if (bodyError) {
+      errors.body = cleanupJoiError(bodyError);
+    } else {
+      ctx.request.body = bodyValue;
+    }
+
     if (Object.keys(errors).length) {
       ctx.throw(400, 'Validation failed, check details for more information', {
         code: 'VALIDATION_FAILED',
