@@ -1,4 +1,6 @@
 const userRepository = require('../repository/user');
+const ServiceError = require('../core/serviceError');
+const handleDBError = require('./_handleDBError');
 
 /**
  * Get all users.
@@ -20,7 +22,7 @@ const getById = async (id) => {
   const user = await userRepository.findById(id);
 
   if (!user) {
-    throw Error(`No user with id ${id} exists`, { id });
+    throw ServiceError.notFound(`No user with id ${id} exists`, { id });
   }
 
   return user;
@@ -33,11 +35,12 @@ const getById = async (id) => {
  * @param {string} [user.name] - Name of the user.
  */
 const register = async ({ name }) => {
-  const userId = await userRepository.create({ name });
-
-  const user = await userRepository.findById(userId);
-
-  return user;
+  try {
+    const userId = await userRepository.create({ name });
+    return await userRepository.findById(userId);
+  } catch (error) {
+    throw handleDBError(error);
+  }
 };
 
 /**
@@ -48,8 +51,12 @@ const register = async ({ name }) => {
  * @param {string} [user.name] - Name of the user.
  */
 const updateById = async (id, { name }) => {
-  await userRepository.updateById(id, { name });
-  return getById(id);
+  try {
+    await userRepository.updateById(id, { name });
+    return getById(id);
+  } catch (error) {
+    throw handleDBError(error);
+  }
 };
 
 /**
@@ -58,10 +65,14 @@ const updateById = async (id, { name }) => {
  * @param {number} id - Id of the user to delete.
  */
 const deleteById = async (id) => {
-  const deleted = await userRepository.deleteById(id);
+  try {
+    const deleted = await userRepository.deleteById(id);
 
-  if (!deleted) {
-    throw Error(`No user with id ${id} exists`, { id });
+    if (!deleted) {
+      throw ServiceError.notFound(`No user with id ${id} exists`, { id });
+    }
+  } catch (error) {
+    throw handleDBError(error);
   }
 };
 

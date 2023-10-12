@@ -46,24 +46,32 @@ const updateById = async (id, { amount, date, placeId, userId }) => {
     const existingPlace = await placeService.getById(placeId);
 
     if (!existingPlace) {
-      throw Error(`There is no place with id ${id}.`, { id });
+      throw ServiceError.notFound(`There is no place with id ${id}.`, { id });
     }
   }
 
-  await transactionRepository.updateById(id, {
-    amount,
-    date,
-    userId,
-    placeId,
-  });
-  return getById(id);
+  try {
+    await transactionRepository.updateById(id, {
+      amount,
+      date,
+      userId,
+      placeId,
+    });
+    return getById(id);
+  } catch (error) {
+    throw handleDBError(error);
+  }
 };
 
 const deleteById = async (id) => {
-  const deleted = await transactionRepository.deleteById(id);
+  try {
+    const deleted = await transactionRepository.deleteById(id);
 
-  if (!deleted) {
-    throw Error(`No transaction with id ${id} exists`, { id });
+    if (!deleted) {
+      throw ServiceError.notFound(`No transaction with id ${id} exists`, { id });
+    }
+  } catch (error) {
+    throw handleDBError(error);
   }
 };
 

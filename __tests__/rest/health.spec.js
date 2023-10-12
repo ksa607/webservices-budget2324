@@ -28,6 +28,14 @@ describe('Health', () => {
         pong: true,
       });
     });
+
+    it('should 400 with unknown query parameters', async () => {
+      const response = await request.get(`${url}/ping?invalid=true`);
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.query).toHaveProperty('invalid');
+    });
   });
 
   describe('GET /api/health/version', () => {
@@ -40,6 +48,27 @@ describe('Health', () => {
         env: 'test',
         version: packageJson.version,
         name: packageJson.name,
+      });
+    });
+
+    it('should 400 with unknown query parameters', async () => {
+      const response = await request.get(`${url}/version?invalid=true`);
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.query).toHaveProperty('invalid');
+    });
+  });
+
+  describe('General', () => {
+
+    it('should return 404 when accessing invalid url', async () => {
+      const response = await request.get('/invalid');
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body).toEqual({
+        code: 'NOT_FOUND',
+        message: 'Unknown resource: /invalid',
       });
     });
   });
