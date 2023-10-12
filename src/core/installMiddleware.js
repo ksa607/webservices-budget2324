@@ -2,6 +2,7 @@ const config = require('config');
 const bodyParser = require('koa-bodyparser');
 const koaCors = require('@koa/cors');
 const emoji = require('node-emoji');
+const koaHelmet = require('koa-helmet');
 const { getLogger } = require('./logging');
 const ServiceError = require('./serviceError');
 
@@ -59,6 +60,8 @@ module.exports = function installMiddleware(app) {
   });
 
   app.use(bodyParser());
+
+  app.use(koaHelmet());
 
   app.use(async (ctx, next) => {
     try {
