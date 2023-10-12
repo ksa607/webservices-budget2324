@@ -1,15 +1,23 @@
 const Router = require('@koa/router');
+const Joi = require('joi');
 const userService = require('../service/user');
+const validate = require('../core/validation');
 
 const getAllUsers = async (ctx) => {
   const users = await userService.getAll();
   ctx.body = users;
 };
+getAllUsers.validationScheme = null;
 
 const register = async (ctx) => {
   const user = await userService.register(ctx.request.body);
   ctx.status = 200;
   ctx.body = user;
+};
+register.validationScheme = {
+  body: {
+    name: Joi.string().max(255),
+  },
 };
 
 const getUserById = async (ctx) => {
@@ -17,16 +25,34 @@ const getUserById = async (ctx) => {
   ctx.status = 200;
   ctx.body = user;
 };
+getUserById.validationScheme = {
+  params: {
+    id: Joi.number().integer().positive(),
+  },
+};
 
 const updateUserById = async (ctx) => {
   const user = await userService.updateById(ctx.params.id, ctx.request.body);
   ctx.status = 200;
   ctx.body = user;
 };
+updateUserById.validationScheme = {
+  params: {
+    id: Joi.number().integer().positive(),
+  },
+  body: {
+    name: Joi.string().max(255),
+  },
+};
 
 const deleteUserById = async (ctx) => {
   await userService.deleteById(ctx.params.id);
   ctx.status = 204;
+};
+deleteUserById.validationScheme = {
+  params: {
+    id: Joi.number().integer().positive(),
+  },
 };
 
 /**
@@ -39,11 +65,31 @@ module.exports = function installUserRoutes(app) {
     prefix: '/users',
   });
 
-  router.get('/', getAllUsers);
-  router.get('/:id', getUserById);
-  router.post('/register', register);
-  router.put('/:id', updateUserById);
-  router.delete('/:id', deleteUserById);
+  router.get(
+    '/',
+    validate(getAllUsers.validationScheme),
+    getAllUsers
+  );
+  router.get(
+    '/:id',
+    validate(getUserById.validationScheme),
+    getUserById
+  );
+  router.post(
+    '/register',
+    validate(register.validationScheme),
+    register
+  );
+  router.put(
+    '/:id',
+    validate(updateUserById.validationScheme),
+    updateUserById
+  );
+  router.delete(
+    '/:id',
+    validate(deleteUserById.validationScheme),
+    deleteUserById
+  );
 
   app.use(router.routes()).use(router.allowedMethods());
 };

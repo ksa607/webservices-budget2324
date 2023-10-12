@@ -44,10 +44,26 @@ const updateTransaction = async (ctx) => {
     userId: Number(ctx.request.body.userId),
   });
 };
+updateTransaction.validationScheme = {
+  params: {
+    id: Joi.number().integer().positive(),
+  },
+  body: {
+    amount: Joi.number().invalid(0),
+    date: Joi.date().iso().less('now'),
+    placeId: Joi.number().integer().positive(),
+    userId: Joi.number().integer().positive(),
+  },
+};
 
 const deleteTransaction = async (ctx) => {
   await transactionService.deleteById(ctx.params.id);
   ctx.status = 204;
+};
+deleteTransaction.validationScheme = {
+  params: {
+    id: Joi.number().integer().positive(),
+  },
 };
 
 /**
@@ -75,8 +91,16 @@ module.exports = (app) => {
     validate(getTransactionById.validationScheme),
     getTransactionById
   );
-  router.put('/:id', updateTransaction);
-  router.delete('/:id', deleteTransaction);
+  router.put(
+    '/:id',
+    validate(updateTransaction.validationScheme),
+    updateTransaction
+  );
+  router.delete(
+    '/:id',
+    validate(deleteTransaction.validationScheme),
+    deleteTransaction
+  );
 
   app.use(router.routes()).use(router.allowedMethods());
 };
