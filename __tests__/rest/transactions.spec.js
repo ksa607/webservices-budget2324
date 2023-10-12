@@ -113,4 +113,46 @@ describe('Transactions', () => {
       });
     });
   });
+
+  describe('GET /api/transactions/:id', () => {
+
+    beforeAll(async () => {
+      await knex(tables.place).insert(data.places);
+      await knex(tables.user).insert(data.users);
+      await knex(tables.transaction).insert(data.transactions[0]);
+    });
+
+    afterAll(async () => {
+      await knex(tables.transaction)
+        .whereIn('id', dataToDelete.transactions)
+        .delete();
+
+      await knex(tables.place)
+        .whereIn('id', dataToDelete.places)
+        .delete();
+
+      await knex(tables.user)
+        .whereIn('id', dataToDelete.users)
+        .delete();
+    });
+
+    test('it should 200 and return the requested transaction', async () => {
+      const response = await request.get(`${url}/1`);
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toEqual({
+        id: 1,
+        user: {
+          id: 1,
+          name: 'Test User',
+        },
+        place: {
+          id: 1,
+          name: 'Test place',
+        },
+        amount: 3500,
+        date: new Date(2021, 4, 25, 19, 40).toJSON(),
+      });
+    });
+  });
 });
