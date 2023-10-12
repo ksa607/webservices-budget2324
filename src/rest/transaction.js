@@ -17,6 +17,14 @@ const createTransaction = async (ctx) => {
   ctx.status = 201;
   ctx.body = newTransaction;
 };
+createTransaction.validationScheme = {
+  body: {
+    amount: Joi.number().invalid(0),
+    date: Joi.date().iso().less('now'),
+    placeId: Joi.number().integer().positive(),
+    userId: Joi.number().integer().positive(),
+  },
+};
 
 const getTransactionById = async (ctx) => {
   ctx.body = await transactionService.getById(Number(ctx.params.id));
@@ -52,7 +60,11 @@ module.exports = (app) => {
   });
 
   router.get('/', getAllTransactions);
-  router.post('/', createTransaction);
+  router.post(
+    '/',
+    validate(createTransaction.validationScheme),
+    createTransaction
+  );
   router.get(
     '/:id',
     validate(getTransactionById.validationScheme),
