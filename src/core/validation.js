@@ -68,6 +68,21 @@ const validate = (schema) => {
       ctx.request.body = bodyValue;
     }
 
+    if (!Joi.isSchema(schema.query)) {
+      schema.query = Joi.object(schema.query || {});
+    }
+
+    const { error: queryError, value: queryValue } = schema.query.validate(
+      ctx.query,
+      JOI_OPTIONS
+    );
+
+    if (queryError) {
+      errors.query = cleanupJoiError(queryError);
+    } else {
+      ctx.query = queryValue;
+    }
+
     if (Object.keys(errors).length) {
       ctx.throw(400, 'Validation failed, check details for more information', {
         code: 'VALIDATION_FAILED',
