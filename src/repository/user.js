@@ -40,10 +40,18 @@ const findByEmail = (email) => {
  * @param {object} user - User to create.
  * @param {string} user.name - Name of the user.
  */
-const create = async ({ name }) => {
+const create = async ({
+  name,
+  email,
+  passwordHash,
+  roles
+}) => {
   try {
     const [id] = await getKnex()(tables.user).insert({
       name,
+      email,
+      password_hash: passwordHash,
+      roles: JSON.stringify(roles),
     });
     return id;
   } catch (error) {

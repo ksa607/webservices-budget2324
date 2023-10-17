@@ -1,5 +1,6 @@
 const userRepository = require('../repository/user');
 const ServiceError = require('../core/serviceError');
+const { hashPassword } = require('../core/password');
 const handleDBError = require('./_handleDBError');
 
 /**
@@ -34,9 +35,20 @@ const getById = async (id) => {
  * @param {object} user - User to save.
  * @param {string} [user.name] - Name of the user.
  */
-const register = async ({ name }) => {
+const register = async ({
+  name,
+  email,
+  password,
+}) => {
   try {
-    const userId = await userRepository.create({ name });
+    const passwordHash = await hashPassword(password); 
+
+    const userId = await userRepository.create({
+      name,
+      email,
+      passwordHash,
+      roles: ['user'],
+    });
     return await userRepository.findById(userId);
   } catch (error) {
     throw handleDBError(error);
