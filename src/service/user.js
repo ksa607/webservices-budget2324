@@ -1,7 +1,46 @@
 const userRepository = require('../repository/user');
 const ServiceError = require('../core/serviceError');
-const { hashPassword } = require('../core/password');
+const { hashPassword, verifyPassword } = require('../core/password');
+const { generateJWT } = require('../core/jwt');
 const handleDBError = require('./_handleDBError');
+
+const makeExposedUser = ({ id, name, email, roles }) => ({
+  id,
+  name,
+  email,
+  roles,
+});
+
+const makeLoginData = async (user) => {
+  const token = await generateJWT(user);
+  return {
+    user: makeExposedUser(user),
+    token,
+  };
+};
+
+const login = async (email, password) => {
+  const user = await userRepository.findByEmail(email);
+
+  if (!user) {
+    // DO NOT expose we don't know the user
+    throw ServiceError.unauthorized(
+      'The given email and password do not match'
+    );
+  }
+
+  const passwordValid = await verifyPassword(password, user.password_hash);
+
+  if (!passwordValid) {
+    // DO NOT expose we know the user but an invalid password was given
+    throw ServiceError.unauthorized(
+      'The given email and password do not match'
+    );
+  }
+
+  return await makeLoginData(user);
+};
+
 
 /**
  * Get all users.
@@ -9,7 +48,7 @@ const handleDBError = require('./_handleDBError');
 const getAll = async () => {
   const items = await userRepository.findAll();
   return {
-    items,
+    items: items.map(makeExposedUser),
     count: items.length,
   };
 };
@@ -26,7 +65,7 @@ const getById = async (id) => {
     throw ServiceError.notFound(`No user with id ${id} exists`, { id });
   }
 
-  return user;
+  return makeExposedUser(user);
 };
 
 /**
@@ -51,7 +90,8 @@ const register = async ({
       passwordHash,
       roles: ['user'],
     });
-    return await userRepository.findById(userId);
+    const user = await userRepository.findById(userId);
+    return await makeLoginData(user);
   } catch (error) {
     throw handleDBError(error);
   }
@@ -95,6 +135,7 @@ const deleteById = async (id) => {
 };
 
 module.exports = {
+  login,
   getAll,
   getById,
   register,

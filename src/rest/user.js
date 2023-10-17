@@ -3,6 +3,18 @@ const Joi = require('joi');
 const userService = require('../service/user');
 const validate = require('../core/validation');
 
+const login = async (ctx) => {
+  const { email, password } = ctx.request.body;
+  const token = await userService.login(email, password);
+  ctx.body = token;
+};
+login.validationScheme = { // 👈 5
+  body: {
+    email: Joi.string().email(),
+    password: Joi.string(),
+  },
+};
+
 const getAllUsers = async (ctx) => {
   const users = await userService.getAll();
   ctx.body = users;
@@ -77,6 +89,11 @@ module.exports = function installUserRoutes(app) {
     '/:id',
     validate(getUserById.validationScheme),
     getUserById
+  );
+  router.post(
+    '/login',
+    validate(login.validationScheme),
+    login
   );
   router.post(
     '/register',
