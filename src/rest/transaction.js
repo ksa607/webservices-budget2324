@@ -15,7 +15,7 @@ const createTransaction = async (ctx) => {
     ...ctx.request.body,
     placeId: Number(ctx.request.body.placeId),
     date: new Date(ctx.request.body.date),
-    userId: Number(ctx.request.body.userId),
+    userId: ctx.state.session.userId,
   });
   ctx.status = 201;
   ctx.body = newTransaction;
@@ -25,7 +25,6 @@ createTransaction.validationScheme = {
     amount: Joi.number().invalid(0),
     date: Joi.date().iso().less('now'),
     placeId: Joi.number().integer().positive(),
-    userId: Joi.number().integer().positive(),
   },
 };
 
@@ -44,7 +43,7 @@ const updateTransaction = async (ctx) => {
     ...ctx.request.body,
     placeId: Number(ctx.request.body.placeId),
     date: new Date(ctx.request.body.date),
-    userId: Number(ctx.request.body.userId),
+    userId: ctx.state.session.userId,
   });
 };
 updateTransaction.validationScheme = {
@@ -55,7 +54,6 @@ updateTransaction.validationScheme = {
     amount: Joi.number().invalid(0),
     date: Joi.date().iso().less('now'),
     placeId: Joi.number().integer().positive(),
-    userId: Joi.number().integer().positive(),
   },
 };
 

@@ -58,7 +58,7 @@ const updateById = async (id, { amount, date, placeId, userId }) => {
       userId,
       placeId,
     });
-    return getById(id);
+    return getById(id, userId);
   } catch (error) {
     throw handleDBError(error);
   }
