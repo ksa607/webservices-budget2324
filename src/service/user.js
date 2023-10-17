@@ -2,6 +2,7 @@ const userRepository = require('../repository/user');
 const ServiceError = require('../core/serviceError');
 const { hashPassword, verifyPassword } = require('../core/password');
 const { generateJWT } = require('../core/jwt');
+const Role = require('../core/roles');
 const handleDBError = require('./_handleDBError');
 
 const makeExposedUser = ({ id, name, email, roles }) => ({
@@ -88,7 +89,7 @@ const register = async ({
       name,
       email,
       passwordHash,
-      roles: ['user'],
+      roles: [Role.USER],
     });
     const user = await userRepository.findById(userId);
     return await makeLoginData(user);
