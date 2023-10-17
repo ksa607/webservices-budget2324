@@ -163,6 +163,7 @@ const deleteById = async (id, userId) => {
   try {
     const rowsAffected = await getKnex()(tables.transaction)
       .where(`${tables.transaction}.id`, id)
+      .where(`${tables.transaction}.user_id`, userId)
       .delete();
 
     return rowsAffected > 0;

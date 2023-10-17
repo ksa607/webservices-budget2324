@@ -64,9 +64,9 @@ const updateById = async (id, { amount, date, placeId, userId }) => {
   }
 };
 
-const deleteById = async (id) => {
+const deleteById = async (id, userId) => {
   try {
-    const deleted = await transactionRepository.deleteById(id);
+    const deleted = await transactionRepository.deleteById(id, userId);
 
     if (!deleted) {
       throw ServiceError.notFound(`No transaction with id ${id} exists`, { id });

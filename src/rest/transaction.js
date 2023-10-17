@@ -58,7 +58,7 @@ updateTransaction.validationScheme = {
 };
 
 const deleteTransaction = async (ctx) => {
-  await transactionService.deleteById(ctx.params.id);
+  await transactionService.deleteById(ctx.params.id, ctx.state.session.userId);
   ctx.status = 204;
 };
 deleteTransaction.validationScheme = {
