@@ -1,6 +1,7 @@
 const Router = require('@koa/router');
 const Joi = require('joi');
 const validate = require('../core/validation');
+const { requireAuthentication } = require('../core/auth');
 const transactionService = require('../service/transaction');
 
 const getAllTransactions = async (ctx) => {
@@ -75,6 +76,8 @@ module.exports = (app) => {
   const router = new Router({
     prefix: '/transactions',
   });
+
+  router.use(requireAuthentication);
 
   router.get(
     '/',

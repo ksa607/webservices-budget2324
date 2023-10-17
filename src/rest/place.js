@@ -2,6 +2,7 @@ const Router = require('@koa/router');
 const Joi = require('joi');
 const placeService = require('../service/place');
 const validate = require('../core/validation');
+const { requireAuthentication } = require('../core/auth');
 
 const getAllPlaces = async (ctx) => {
   ctx.body = await placeService.getAll();
@@ -67,6 +68,8 @@ module.exports = (app) => {
   const router = new Router({
     prefix: '/places',
   });
+
+  router.use(requireAuthentication);
 
   router.get(
     '/',
