@@ -30,7 +30,8 @@ createTransaction.validationScheme = {
 };
 
 const getTransactionById = async (ctx) => {
-  ctx.body = await transactionService.getById(Number(ctx.params.id));
+  const { userId } = ctx.state.session;
+  ctx.body = await transactionService.getById(Number(ctx.params.id), userId);
 };
 getTransactionById.validationScheme = {
   params: Joi.object({
