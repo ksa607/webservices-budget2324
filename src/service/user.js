@@ -1,8 +1,10 @@
+const config = require('config');
 const userRepository = require('../repository/user');
 const ServiceError = require('../core/serviceError');
 const { hashPassword, verifyPassword } = require('../core/password');
-const { generateJWT } = require('../core/jwt');
+const { generateJWT, verifyJWT } = require('../core/jwt');
 const Role = require('../core/roles');
+const { getLogger } = require('../core/logging');
 const handleDBError = require('./_handleDBError');
 
 const makeExposedUser = ({ id, name, email, roles }) => ({
@@ -18,6 +20,41 @@ const makeLoginData = async (user) => {
     user: makeExposedUser(user),
     token,
   };
+};
+
+const checkAndParseSession = async (authHeader) => {
+  if (!authHeader) {
+    throw ServiceError.unauthorized('You need to be signed in');
+  } 
+
+  if (!authHeader.startsWith('Bearer ')) {
+    throw ServiceError.unauthorized('Invalid authentication token');
+  }
+
+  const authToken = authHeader.substring(7);
+  try {
+    const { roles, userId } = await verifyJWT(authToken);
+
+
+    return {
+      userId,
+      roles,
+      authToken,
+    };
+  } catch (error) {
+    getLogger().error(error.message, { error });
+    throw new Error(error.message);
+  }
+};
+
+const checkRole = (role, roles) => {
+  const hasPermission = roles.includes(role); // 👈 1
+
+  if (!hasPermission) {
+    throw ServiceError.forbidden(
+      'You are not allowed to view this part of the application'
+    ); // 👈 2
+  }
 };
 
 const login = async (email, password) => {
@@ -136,6 +173,8 @@ const deleteById = async (id) => {
 };
 
 module.exports = {
+  checkAndParseSession,
+  checkRole,
   login,
   getAll,
   getById,
