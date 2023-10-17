@@ -5,6 +5,26 @@ const validate = require('../core/validation');
 const { requireAuthentication, makeRequireRole } = require('../core/auth');
 const Role = require('../core/roles');
 
+/**
+ * Check if the signed in user can access the given user's information.
+ */
+const checkUserId = (ctx, next) => {
+  const { userId, roles } = ctx.state.session;
+  const { id } = ctx.params;
+
+  // You can only get our own data unless you're an admin
+  if (id !== userId && !roles.includes(Role.ADMIN)) {
+    return ctx.throw(
+      403,
+      "You are not allowed to view this user's information",
+      {
+        code: 'FORBIDDEN',
+      }
+    );
+  }
+  return next();
+};
+
 const login = async (ctx) => {
   const { email, password } = ctx.request.body;
   const token = await userService.login(email, password);
@@ -108,18 +128,21 @@ module.exports = function installUserRoutes(app) {
     '/:id',
     requireAuthentication,
     validate(getUserById.validationScheme),
+    checkUserId,
     getUserById
   );
   router.put(
     '/:id',
     requireAuthentication,
     validate(updateUserById.validationScheme),
+    checkUserId,
     updateUserById
   );
   router.delete(
     '/:id',
     requireAuthentication,
     validate(deleteUserById.validationScheme),
+    checkUserId,
     deleteUserById
   );
 
