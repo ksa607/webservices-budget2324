@@ -39,6 +39,9 @@ const findByEmail = (email) => {
  *
  * @param {object} user - User to create.
  * @param {string} user.name - Name of the user.
+ * @param {string} user.email - Email of the user.
+ * @param {string} user.passwordHash - Hashed password of the user.
+ * @param {string[]} roles - Roles of the user.
  */
 const create = async ({
   name,
@@ -68,12 +71,14 @@ const create = async ({
  * @param {number} id - Id of the user to update.
  * @param {object} user - User to save.
  * @param {string} user.name - Name of the user.
+ * @param {string} user.email - Email of the user.
  */
 const updateById = async (id, { name, email }) => {
   try {
     await getKnex()(tables.user)
       .update({
         name,
+        email,
       })
       .where('id', id);
     return id;

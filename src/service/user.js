@@ -34,6 +34,8 @@ const getById = async (id) => {
  *
  * @param {object} user - User to save.
  * @param {string} [user.name] - Name of the user.
+ * @param {string} [user.email] - Email of the user.
+ * @param {string} [user.password] - Password of the user.
  */
 const register = async ({
   name,
@@ -41,7 +43,7 @@ const register = async ({
   password,
 }) => {
   try {
-    const passwordHash = await hashPassword(password); 
+    const passwordHash = await hashPassword(password);
 
     const userId = await userRepository.create({
       name,
@@ -61,10 +63,14 @@ const register = async ({
  * @param {number} id - Id of the user to update.
  * @param {object} user - User to save.
  * @param {string} [user.name] - Name of the user.
+ * @param {string} [user.email] - Email of the user.
  */
-const updateById = async (id, { name }) => {
+const updateById = async (id, { name, email }) => {
   try {
-    await userRepository.updateById(id, { name });
+    await userRepository.updateById(id, {
+      name,
+      email,
+    });
     return getById(id);
   } catch (error) {
     throw handleDBError(error);

@@ -44,6 +44,7 @@ updateUserById.validationScheme = {
   },
   body: {
     name: Joi.string().max(255),
+    email: Joi.string().email(),
   },
 };
 
