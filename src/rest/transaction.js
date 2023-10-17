@@ -5,7 +5,8 @@ const { requireAuthentication } = require('../core/auth');
 const transactionService = require('../service/transaction');
 
 const getAllTransactions = async (ctx) => {
-  ctx.body = await transactionService.getAll();
+  const { userId } = ctx.state.session;
+  ctx.body = await transactionService.getAll(userId);
 };
 getAllTransactions.validationScheme = null;
 

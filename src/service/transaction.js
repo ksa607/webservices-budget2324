@@ -3,11 +3,12 @@ const placeService = require('./place');
 const ServiceError = require('../core/serviceError');
 const handleDBError = require('./_handleDBError');
 
-const getAll = async () => {
-  const items = await transactionRepository.findAll();
+const getAll = async (userId) => {
+  const items = await transactionRepository.findAll(userId);
+  const count = await transactionRepository.findCount(userId);
   return {
     items,
-    count: items.length,
+    count,
   };
 };
 

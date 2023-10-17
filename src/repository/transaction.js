@@ -35,7 +35,7 @@ const SELECT_COLUMNS = [
  * Get all transactions
  *
  */
-const findAll = async () => {
+const findAll = async (userId) => {
   const transactions = await getKnex()(tables.transaction)
     .join(
       tables.place,
@@ -49,6 +49,7 @@ const findAll = async () => {
       '=',
       `${tables.user}.id`
     )
+    .where(`${tables.transaction}.user_id`, userId)
     .select(SELECT_COLUMNS)
     .orderBy('date', 'ASC');
 
@@ -59,8 +60,10 @@ const findAll = async () => {
  * Calculate the total number of transactions.
  *
  */
-const findCount = async () => {
-  const [count] = await getKnex()(tables.transaction).count();
+const findCount = async (userId) => {
+  const [count] = await getKnex()(tables.transaction)
+  .count()
+  .where(`${tables.transaction}.user_id`, userId);
 
   return count['count(*)'];
 };
