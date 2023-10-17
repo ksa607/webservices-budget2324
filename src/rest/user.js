@@ -2,6 +2,8 @@ const Router = require('@koa/router');
 const Joi = require('joi');
 const userService = require('../service/user');
 const validate = require('../core/validation');
+const { requireAuthentication, makeRequireRole } = require('../core/auth');
+const Role = require('../core/roles');
 
 const login = async (ctx) => {
   const { email, password } = ctx.request.body;
@@ -80,16 +82,7 @@ module.exports = function installUserRoutes(app) {
     prefix: '/users',
   });
 
-  router.get(
-    '/',
-    validate(getAllUsers.validationScheme),
-    getAllUsers
-  );
-  router.get(
-    '/:id',
-    validate(getUserById.validationScheme),
-    getUserById
-  );
+  // Public routes
   router.post(
     '/login',
     validate(login.validationScheme),
@@ -100,16 +93,36 @@ module.exports = function installUserRoutes(app) {
     validate(register.validationScheme),
     register
   );
+
+  const requireAdmin = makeRequireRole(Role.ADMIN);
+
+  // Routes with authentication/authorization
+  router.get(
+    '/',
+    requireAuthentication,
+    requireAdmin,
+    validate(getAllUsers.validationScheme),
+    getAllUsers
+  );
+  router.get(
+    '/:id',
+    requireAuthentication,
+    validate(getUserById.validationScheme),
+    getUserById
+  );
   router.put(
     '/:id',
+    requireAuthentication,
     validate(updateUserById.validationScheme),
     updateUserById
   );
   router.delete(
     '/:id',
+    requireAuthentication,
     validate(deleteUserById.validationScheme),
     deleteUserById
   );
 
-  app.use(router.routes()).use(router.allowedMethods());
+  app.use(router.routes())
+    .use(router.allowedMethods());
 };
