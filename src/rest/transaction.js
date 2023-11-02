@@ -83,27 +83,27 @@ module.exports = (app) => {
   router.get(
     '/',
     validate(getAllTransactions.validationScheme),
-    getAllTransactions
+    getAllTransactions,
   );
   router.post(
     '/',
     validate(createTransaction.validationScheme),
-    createTransaction
+    createTransaction,
   );
   router.get(
     '/:id',
     validate(getTransactionById.validationScheme),
-    getTransactionById
+    getTransactionById,
   );
   router.put(
     '/:id',
     validate(updateTransaction.validationScheme),
-    updateTransaction
+    updateTransaction,
   );
   router.delete(
     '/:id',
     validate(deleteTransaction.validationScheme),
-    deleteTransaction
+    deleteTransaction,
   );
 
   app.use(router.routes()).use(router.allowedMethods());

@@ -47,7 +47,7 @@ const create = async ({
   name,
   email,
   passwordHash,
-  roles
+  roles,
 }) => {
   try {
     const [id] = await getKnex()(tables.user).insert({

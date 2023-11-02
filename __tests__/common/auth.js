@@ -10,7 +10,7 @@ const testAuthHeader = (requestFactory) => {
   test('it should 401 when invalid authorization token provided', async () => {
     const response = await requestFactory().set(
       'Authorization',
-      'INVALID TOKEN'
+      'INVALID TOKEN',
     );
 
     expect(response.statusCode).toBe(401);

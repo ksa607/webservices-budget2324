@@ -18,7 +18,8 @@ const getLogger = () => {
 };
 
 /**
- * Define the logging format. We output a timestamp, context (name), level, message and the stacktrace in case of an error
+ * Define the logging format. We output a timestamp, context (name), level, 
+ * message and the stacktrace in case of an error
  */
 const loggerFormat = () => {
   const formatMessage = ({
@@ -47,7 +48,7 @@ const loggerFormat = () => {
 const initializeLogger = ({
   level,
   disabled = false,
-  defaultMeta = {}
+  defaultMeta = {},
 }) => {
   const transports = NODE_ENV === 'test' ? [
     new winston.transports.File({

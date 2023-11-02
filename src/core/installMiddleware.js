@@ -17,7 +17,7 @@ const CORS_MAX_AGE = config.get('cors.maxAge');
  * @param {koa.Application} app - The Koa application.
  */
 module.exports = function installMiddleware(app) {
-   app.use(
+  app.use(
     koaCors({
       origin: (ctx) => {
         if (CORS_ORIGINS.indexOf(ctx.request.header.origin) !== -1) {
@@ -28,7 +28,7 @@ module.exports = function installMiddleware(app) {
       },
       allowHeaders: ['Accept', 'Content-Type', 'Authorization'],
       maxAge: CORS_MAX_AGE,
-    })
+    }),
   );
 
   app.use(async (ctx, next) => {
@@ -46,14 +46,14 @@ module.exports = function installMiddleware(app) {
       await next();
 
       getLogger().info(
-        `${getStatusEmoji()} ${ctx.method} ${ctx.status} ${ctx.url}`
+        `${getStatusEmoji()} ${ctx.method} ${ctx.status} ${ctx.url}`,
       );
     } catch (error) {
       getLogger().error(
         `${emoji.get('x')} ${ctx.method} ${ctx.status} ${ctx.url}`,
         {
           error,
-        }
+        },
       );
 
       throw error;

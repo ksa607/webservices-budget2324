@@ -9,7 +9,7 @@ const JOI_OPTIONS = {
 };
 
 const cleanupJoiError = (
-  error
+  error,
 ) =>
   error.details.reduce((resultObj, { message, path, type }) => {
     const joinedPath = path.join('.') || 'value';
@@ -44,7 +44,7 @@ const validate = (schema) => {
 
     const { error: paramsError, value: paramsValue } = schema.params.validate(
       ctx.params,
-      JOI_OPTIONS
+      JOI_OPTIONS,
     );
 
     if (paramsError) {
@@ -59,7 +59,7 @@ const validate = (schema) => {
 
     const { error: bodyError, value: bodyValue } = schema.body.validate(
       ctx.request.body,
-      JOI_OPTIONS
+      JOI_OPTIONS,
     );
 
     if (bodyError) {
@@ -74,7 +74,7 @@ const validate = (schema) => {
 
     const { error: queryError, value: queryValue } = schema.query.validate(
       ctx.query,
-      JOI_OPTIONS
+      JOI_OPTIONS,
     );
 
     if (queryError) {

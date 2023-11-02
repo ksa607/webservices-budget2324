@@ -52,7 +52,7 @@ const checkRole = (role, roles) => {
 
   if (!hasPermission) {
     throw ServiceError.forbidden(
-      'You are not allowed to view this part of the application'
+      'You are not allowed to view this part of the application',
     ); // 👈 2
   }
 };
@@ -63,7 +63,7 @@ const login = async (email, password) => {
   if (!user) {
     // DO NOT expose we don't know the user
     throw ServiceError.unauthorized(
-      'The given email and password do not match'
+      'The given email and password do not match',
     );
   }
 
@@ -72,7 +72,7 @@ const login = async (email, password) => {
   if (!passwordValid) {
     // DO NOT expose we know the user but an invalid password was given
     throw ServiceError.unauthorized(
-      'The given email and password do not match'
+      'The given email and password do not match',
     );
   }
 

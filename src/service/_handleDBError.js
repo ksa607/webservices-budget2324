@@ -7,11 +7,11 @@ const handleDBError = (error) => {
     switch (true) {
       case sqlMessage.includes('idx_place_name_unique'):
         return ServiceError.validationFailed(
-          'A place with this name already exists'
+          'A place with this name already exists',
         );
       case sqlMessage.includes('idx_user_email_unique'):
         return ServiceError.validationFailed(
-          'There is already a user with this email address'
+          'There is already a user with this email address',
         );
       default:
         return ServiceError.validationFailed('This item already exists');

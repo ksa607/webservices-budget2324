@@ -217,7 +217,7 @@ describe('Transactions', () => {
       });
       expect(response.body.user).toEqual({
         id: 1,
-        name: 'Test User'
+        name: 'Test User',
       });
 
       transactionsToDelete.push(response.body.id);

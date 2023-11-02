@@ -4,7 +4,7 @@ const requireAuthentication = async (ctx, next) => {
   const { authorization } = ctx.headers;
 
   const { authToken, ...session } = await userService.checkAndParseSession(
-    authorization
+    authorization,
   );
 
   ctx.state.session = session;

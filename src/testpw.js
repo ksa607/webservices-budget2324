@@ -18,7 +18,7 @@ async function main() {
     'The password',
     wrongPassword,
     'is',
-    valid ? 'valid' : 'incorrect'
+    valid ? 'valid' : 'incorrect',
   );
 }
 

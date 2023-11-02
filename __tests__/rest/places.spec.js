@@ -7,7 +7,7 @@ const data = {
     { id: 1, name: 'Loon', rating: 5 },
     { id: 2, name: 'Benzine', rating: 2 },
     { id: 3, name: 'Irish pub', rating: 4 },
-  ]
+  ],
 };
 
 const dataToDelete = {
@@ -232,7 +232,7 @@ describe('Places', () => {
       });
     });
 
-     it('should 400 for duplicate place name', async () => {
+    it('should 400 for duplicate place name', async () => {
       const response = await request.put(`${url}/2`)
         .set('Authorization', authHeader)
         .send({

@@ -17,10 +17,10 @@ const checkUserId = (ctx, next) => {
   if (id !== userId && !roles.includes(Role.ADMIN)) {
     return ctx.throw(
       403,
-      "You are not allowed to view this user's information",
+      'You are not allowed to view this user\'s information',
       {
         code: 'FORBIDDEN',
-      }
+      },
     );
   }
   return next();
@@ -107,12 +107,12 @@ module.exports = function installUserRoutes(app) {
   router.post(
     '/login',
     validate(login.validationScheme),
-    login
+    login,
   );
   router.post(
     '/register',
     validate(register.validationScheme),
-    register
+    register,
   );
 
   const requireAdmin = makeRequireRole(Role.ADMIN);
@@ -123,28 +123,28 @@ module.exports = function installUserRoutes(app) {
     requireAuthentication,
     requireAdmin,
     validate(getAllUsers.validationScheme),
-    getAllUsers
+    getAllUsers,
   );
   router.get(
     '/:id',
     requireAuthentication,
     validate(getUserById.validationScheme),
     checkUserId,
-    getUserById
+    getUserById,
   );
   router.put(
     '/:id',
     requireAuthentication,
     validate(updateUserById.validationScheme),
     checkUserId,
-    updateUserById
+    updateUserById,
   );
   router.delete(
     '/:id',
     requireAuthentication,
     validate(deleteUserById.validationScheme),
     checkUserId,
-    deleteUserById
+    deleteUserById,
   );
 
   app.use(router.routes())

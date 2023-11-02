@@ -25,11 +25,11 @@ const data = {
     email: 'three@user.be',
     password_hash: 'doesntmatter',
     roles: JSON.stringify([Role.USER]),
-  }]
+  }],
 };
 
 const dataToDelete = {
-  users: [3, 4, 5]
+  users: [3, 4, 5],
 };
 
 describe('Users', () => {
@@ -228,7 +228,7 @@ describe('Users', () => {
     });
 
     it('should 403 when not admin', async () => {
-       const response = await request.put(`${url}/2`)
+      const response = await request.put(`${url}/2`)
         .set('Authorization', authHeader)
         .send({
           name: 'Changed name',
@@ -238,7 +238,7 @@ describe('Users', () => {
       expect(response.statusCode).toBe(403);
       expect(response.body).toMatchObject({
         code: 'FORBIDDEN',
-        message: "You are not allowed to view this user's information"
+        message: 'You are not allowed to view this user\'s information',
       });
       expect(response.body.stack).toBeTruthy();
     });
@@ -285,13 +285,13 @@ describe('Users', () => {
     });
 
     it('should 403 when not admin', async () => {
-       const response = await request.delete(`${url}/3`)
+      const response = await request.delete(`${url}/3`)
         .set('Authorization', authHeader);
 
       expect(response.statusCode).toBe(403);
       expect(response.body).toMatchObject({
         code: 'FORBIDDEN',
-        message: "You are not allowed to view this user's information"
+        message: 'You are not allowed to view this user\'s information',
       });
       expect(response.body.stack).toBeTruthy();
     });

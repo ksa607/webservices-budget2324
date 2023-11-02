@@ -41,13 +41,13 @@ const findAll = async (userId) => {
       tables.place,
       `${tables.transaction}.place_id`,
       '=',
-      `${tables.place}.id`
+      `${tables.place}.id`,
     )
     .join(
       tables.user,
       `${tables.transaction}.user_id`,
       '=',
-      `${tables.user}.id`
+      `${tables.user}.id`,
     )
     .where(`${tables.transaction}.user_id`, userId)
     .select(SELECT_COLUMNS)
@@ -62,8 +62,8 @@ const findAll = async (userId) => {
  */
 const findCount = async (userId) => {
   const [count] = await getKnex()(tables.transaction)
-  .count()
-  .where(`${tables.transaction}.user_id`, userId);
+    .count()
+    .where(`${tables.transaction}.user_id`, userId);
 
   return count['count(*)'];
 };
@@ -79,13 +79,13 @@ const findById = async (id) => {
       tables.place,
       `${tables.transaction}.place_id`,
       '=',
-      `${tables.place}.id`
+      `${tables.place}.id`,
     )
     .join(
       tables.user,
       `${tables.transaction}.user_id`,
       '=',
-      `${tables.user}.id`
+      `${tables.user}.id`,
     )
     .where(`${tables.transaction}.id`, id)
     .first(SELECT_COLUMNS);

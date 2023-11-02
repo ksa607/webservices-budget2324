@@ -90,7 +90,7 @@ async function initializeData() {
 function getKnex() {
   if (!knexInstance)
     throw new Error(
-      'Please initialize the data layer before getting the Knex instance'
+      'Please initialize the data layer before getting the Knex instance',
     );
   return knexInstance;
 }

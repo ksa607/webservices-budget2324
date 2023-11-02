@@ -28,12 +28,12 @@ module.exports = function installHealthRoutes(app) {
   router.get(
     '/ping',
     validate(ping.validationScheme),
-    ping
+    ping,
   );
   router.get(
     '/version',
     validate(getVersion.validationScheme),
-    getVersion
+    getVersion,
   );
 
   app.use(router.routes()).use(router.allowedMethods());

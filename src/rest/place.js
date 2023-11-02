@@ -75,27 +75,27 @@ module.exports = (app) => {
   router.get(
     '/',
     validate(getAllPlaces.validationScheme),
-    getAllPlaces
+    getAllPlaces,
   );
   router.post(
     '/',
     validate(createPlace.validationScheme),
-    createPlace
+    createPlace,
   );
   router.get(
     '/:id',
     validate(getPlaceById.validationScheme),
-    getPlaceById
+    getPlaceById,
   );
   router.put(
     '/:id',
     validate(updatePlace.validationScheme),
-    updatePlace
+    updatePlace,
   );
   router.delete(
     '/:id',
     validate(deletePlace.validationScheme),
-    deletePlace
+    deletePlace,
   );
 
   app.use(router.routes()).use(router.allowedMethods());

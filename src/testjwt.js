@@ -3,7 +3,7 @@ const { generateJWT, verifyJWT } = require('./core/jwt');
 function messWithPayload(jwt) {
   const [header, payload, signature] = jwt.split('.');
   const parsedPayload = JSON.parse(
-    Buffer.from(payload, 'base64url').toString()
+    Buffer.from(payload, 'base64url').toString(),
   );
 
   // make me admin please ^^
@@ -11,7 +11,7 @@ function messWithPayload(jwt) {
 
   const newPayload = Buffer.from(
     JSON.stringify(parsedPayload),
-    'ascii'
+    'ascii',
   ).toString('base64url');
   return [header, newPayload, signature].join('.');
 }
