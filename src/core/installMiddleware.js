@@ -3,6 +3,7 @@ const bodyParser = require('koa-bodyparser');
 const koaCors = require('@koa/cors');
 const emoji = require('node-emoji');
 const koaHelmet = require('koa-helmet');
+
 const { getLogger } = require('./logging');
 const ServiceError = require('./serviceError');
 

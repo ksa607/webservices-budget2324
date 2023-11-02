@@ -1,5 +1,6 @@
 const placeRepository = require('../repository/place');
 const ServiceError = require('../core/serviceError');
+
 const handleDBError = require('./_handleDBError');
 
 const getAll = async () => {

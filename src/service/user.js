@@ -1,10 +1,10 @@
-const config = require('config');
 const userRepository = require('../repository/user');
 const ServiceError = require('../core/serviceError');
 const { hashPassword, verifyPassword } = require('../core/password');
 const { generateJWT, verifyJWT } = require('../core/jwt');
 const Role = require('../core/roles');
 const { getLogger } = require('../core/logging');
+
 const handleDBError = require('./_handleDBError');
 
 const makeExposedUser = ({ id, name, email, roles }) => ({

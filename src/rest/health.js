@@ -1,4 +1,5 @@
 const Router = require('@koa/router');
+
 const healthService = require('../service/health');
 const validate = require('../core/validation');
 

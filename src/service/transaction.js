@@ -1,6 +1,7 @@
 const transactionRepository = require('../repository/transaction');
-const placeService = require('./place');
 const ServiceError = require('../core/serviceError');
+
+const placeService = require('./place');
 const handleDBError = require('./_handleDBError');
 
 const getAll = async (userId) => {
@@ -26,7 +27,7 @@ const create = async ({ amount, date, placeId, userId }) => {
   const existingPlace = await placeService.getById(placeId);
 
   if (!existingPlace) {
-    throw ServiceError.notFound(`There is no place with id ${id}.`, { id });
+    throw ServiceError.notFound(`There is no place with id ${placeId}.`, { placeId });
   }
 
   try {
