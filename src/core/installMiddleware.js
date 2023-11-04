@@ -3,6 +3,10 @@ const bodyParser = require('koa-bodyparser');
 const koaCors = require('@koa/cors');
 const emoji = require('node-emoji');
 const koaHelmet = require('koa-helmet');
+const { koaSwagger } = require('koa2-swagger-ui');
+const swaggerJsdoc = require('swagger-jsdoc');
+
+const swaggerOptions = require('../swagger.config');
 
 const { getLogger } = require('./logging');
 const ServiceError = require('./serviceError');
@@ -10,6 +14,7 @@ const ServiceError = require('./serviceError');
 const NODE_ENV = config.get('env');
 const CORS_ORIGINS = config.get('cors.origins');
 const CORS_MAX_AGE = config.get('cors.maxAge');
+const isDevelopment = NODE_ENV === 'development';
 
 /**
  * Install all required middlewares in the given app.
@@ -62,7 +67,9 @@ module.exports = function installMiddleware(app) {
 
   app.use(bodyParser());
 
-  app.use(koaHelmet());
+  app.use(koaHelmet({
+    contentSecurityPolicy: isDevelopment ? false : undefined,
+  }));
 
   app.use(async (ctx, next) => {
     try {
@@ -100,6 +107,21 @@ module.exports = function installMiddleware(app) {
     }
   });
 
+  if (isDevelopment) {
+    const spec = swaggerJsdoc(swaggerOptions);
+    // Install Swagger docs
+    app.use(
+      koaSwagger({
+        routePrefix: '/swagger',
+        specPrefix: '/openapi.json',
+        exposeSpec: true,
+        swaggerOptions: {
+          spec,
+        },
+      }),
+    );
+  }
+  
   // Handle 404 not found with uniform response
   app.use(async (ctx, next) => {
     await next();

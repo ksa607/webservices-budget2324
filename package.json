@@ -24,8 +24,10 @@
     "koa": "^2.14.2",
     "koa-bodyparser": "^4.4.1",
     "koa-helmet": "^7.0.2",
+    "koa2-swagger-ui": "^5.9.1",
     "mysql2": "^3.6.1",
     "node-emoji": "^2.1.0",
+    "swagger-jsdoc": "^6.2.8",
     "winston": "^3.10.0"
   },
   "devDependencies": {
