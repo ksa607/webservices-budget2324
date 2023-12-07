@@ -1,5 +1,6 @@
 const config = require('config');
 const Koa = require('koa');
+
 const { initializeLogger, getLogger } = require('./core/logging');
 const installRest = require('./rest');
 const { initializeData, shutdownData } = require('./data');

@@ -1,0 +1,78 @@
+{
+  "env": {
+    "es6": true,
+    "es2021": true,
+    "node": true,
+    "jest": true
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "import"
+  ],
+  "rules": {
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index"
+        ],
+        "newlines-between": "always"
+      }
+    ],
+    "indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ], //geeft fout als het geen 2 breed is, en ook case moet op 2 indenteren
+    "linebreak-style": [
+      "error",
+      "unix"
+    ], //er is een verschil tussen windows en unix. In windows nog een CR. Git werkt met unix
+    "quotes": [
+      "error",
+      "single"
+    ], //fout als er niet met single quotes gewerkt wordt
+    "semi": [
+      "error",
+      "always"
+    ], //error als er geen ; staat op het einde van de lijn
+    "comma-dangle": [
+      "error",
+      "always-multiline"
+    ], //, op het einde van een lijn, bvb bij object met key-value, of functie splitst over meerdere lijnen. Dus als over meerdere lijnen, steeds ,
+    "no-tabs": [
+      "error"
+    ], //ik wil geen tabs, alles moet met spaties. Dat maakt het moeilijk, de ene zijn tabs zijn 4 breed, de andere 2. Een spatie is bij iedereen even breed
+    "max-len": [
+      "error",
+      {
+        "code": 120,
+        "tabWidth": 2, //moet je hier nog eens meegegeven, kan het niet afleiden uit de indents
+        "ignoreStrings": true //als je strings hebt die langer zijn dan 120, pvb passwordhashes
+      }
+    ],
+    "arrow-parens": [
+      "error",
+      "always"
+    ], //arrow functions als je geen arg meegeeft moet je haken zetten, bij 1 hoef je niet, bij meerdere wel. Dus steeds ()
+    "brace-style": [
+      "error",
+      "1tbs",
+      {
+        "allowSingleLine": false
+      }
+    ], // 1tbs : 1 per bestand en niets op 1 lijn. Alles moet op meerdere lijnene staan bvb if (){…} then {} => meerdere lijnen
+    "no-inner-declarations": "off" //functie definieren binnen andere functie, ik wil hier geen fout op
+  }
+}

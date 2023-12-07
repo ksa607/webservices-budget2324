@@ -35,20 +35,21 @@ const SELECT_COLUMNS = [
  * Get all transactions
  *
  */
-const findAll = async () => {
+const findAll = async (userId) => {
   const transactions = await getKnex()(tables.transaction)
     .join(
       tables.place,
       `${tables.transaction}.place_id`,
       '=',
-      `${tables.place}.id`
+      `${tables.place}.id`,
     )
     .join(
       tables.user,
       `${tables.transaction}.user_id`,
       '=',
-      `${tables.user}.id`
+      `${tables.user}.id`,
     )
+    .where(`${tables.transaction}.user_id`, userId)
     .select(SELECT_COLUMNS)
     .orderBy('date', 'ASC');
 
@@ -59,8 +60,10 @@ const findAll = async () => {
  * Calculate the total number of transactions.
  *
  */
-const findCount = async () => {
-  const [count] = await getKnex()(tables.transaction).count();
+const findCount = async (userId) => {
+  const [count] = await getKnex()(tables.transaction)
+    .count()
+    .where(`${tables.transaction}.user_id`, userId);
 
   return count['count(*)'];
 };
@@ -76,13 +79,13 @@ const findById = async (id) => {
       tables.place,
       `${tables.transaction}.place_id`,
       '=',
-      `${tables.place}.id`
+      `${tables.place}.id`,
     )
     .join(
       tables.user,
       `${tables.transaction}.user_id`,
       '=',
-      `${tables.user}.id`
+      `${tables.user}.id`,
     )
     .where(`${tables.transaction}.id`, id)
     .first(SELECT_COLUMNS);
@@ -160,6 +163,7 @@ const deleteById = async (id, userId) => {
   try {
     const rowsAffected = await getKnex()(tables.transaction)
       .where(`${tables.transaction}.id`, id)
+      .where(`${tables.transaction}.user_id`, userId)
       .delete();
 
     return rowsAffected > 0;

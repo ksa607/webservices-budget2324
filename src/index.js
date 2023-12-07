@@ -5,6 +5,7 @@ async function main() {
     const server = await createServer();
     await server.start();
 
+    // eslint-disable-next-line no-inner-declarations
     async function onClose() {
       await server.stop();
       process.exit(0);

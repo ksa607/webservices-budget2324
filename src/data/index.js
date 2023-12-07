@@ -1,6 +1,7 @@
+const { join } = require('path');
+
 const config = require('config');
 const knex = require('knex');
-const { join } = require('path');
 
 const { getLogger } = require('../core/logging');
 
@@ -89,7 +90,7 @@ async function initializeData() {
 function getKnex() {
   if (!knexInstance)
     throw new Error(
-      'Please initialize the data layer before getting the Knex instance'
+      'Please initialize the data layer before getting the Knex instance',
     );
   return knexInstance;
 }
