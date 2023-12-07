@@ -35,10 +35,6 @@
         "SwitchCase": 1
       }
     ], //geeft fout als het geen 2 breed is, en ook case moet op 2 indenteren
-    "linebreak-style": [
-      "error",
-      "unix"
-    ], //er is een verschil tussen windows en unix. In windows nog een CR. Git werkt met unix
     "quotes": [
       "error",
       "single"
