@@ -4,7 +4,7 @@ module.exports = {
     disabled: false,
   },
   cors: {
-    origins: ['https://frontend-budget2324v2.onrender.com'],
+    origins: ['https://frontendweb-budget2324.onrender.com'],
     maxAge: 3 * 60 * 60,
   },
   database: {
